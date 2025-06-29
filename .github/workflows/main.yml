@@ -36,7 +36,7 @@ jobs:
       - name: Create dist directory
         run: cmake -E make_directory ${{runner.workspace}}/UEFITool/dist
       - name: Signed archive everything
-        if: github.repository_owner == 'LongSoft'
+        if: github.repository_owner == 'LongSoft' && github.event_name != 'pull_request'
         working-directory: ${{runner.workspace}}/build
         env:
           MAC_CERTIFICATE_PASSWORD: ${{ secrets.MAC_CERTIFICATE_PASSWORD }}
@@ -54,7 +54,7 @@ jobs:
           chmod a+x appsign.sh || exit 1
           "$(pwd)/appsign.sh" ./UEFITool/UEFITool.app ../UEFITool/dist/UEFITool_NE_${UEFITOOL_VER}_universal_mac.dmg
       - name: Archive everything
-        if: github.repository_owner != 'LongSoft'
+        if: github.repository_owner != 'LongSoft' || github.event_name == 'pull_request'
         working-directory: ${{runner.workspace}}/build
         shell: bash
         run: |
